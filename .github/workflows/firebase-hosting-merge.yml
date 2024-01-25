@@ -2,18 +2,28 @@
 # https://github.com/firebase/firebase-tools
 
 name: Deploy to Firebase Hosting on merge
-'on':
+"on":
   push:
     branches:
-      - master
+      - main
+env:
+  REACT_APP_APIKEY: "${{ secrets.REACT_APP_APIKEY }}"
+  REACT_APP_AUTHDOMAIN: "${{ secrets.REACT_APP_AUTHDOMAIN }}"
+  REACT_APP_PROJECTID: "${{ secrets.REACT_APP_PROJECTID }}"
+  REACT_APP_STORAGEBUCKET: "${{ secrets.REACT_APP_STORAGEBUCKET }}"
+  REACT_APP_MESSAGINGSENDERID: "${{ secrets.REACT_APP_MESSAGINGSENDERID }}"
+  REACT_APP_APPID: "${{ secrets.REACT_APP_APPID }}"
+  REACT_APP_DATABASE_URL: "${{ secrets.REACT_APP_DATABASE_URL }}"
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@v3
+      - run: CI=false && npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_IRRIGATION_SYSTEM_F189A }}'
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_IRRIGATION_SYSTEM_F189A }}"
           channelId: live
           projectId: irrigation-system-f189a
